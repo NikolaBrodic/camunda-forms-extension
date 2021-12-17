@@ -1,0 +1,20 @@
+body {
+    text-shadow: 0 0.05rem 0.1rem rgba(0, 0, 0, 0.5);
+    background-image: url('../images/bg-img.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+main {
+    max-width: 600px;
+}
+
+.main-container {
+    background-color: rgb(105, 105, 105, 0.8);
+    border-radius: 1rem;
+}
+
+.main-text {
+    font-size: 1.2rem;
+    font-weight: 350;
+}

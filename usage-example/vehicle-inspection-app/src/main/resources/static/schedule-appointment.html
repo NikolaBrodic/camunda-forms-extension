@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/shared-styles.css">
+    <link rel="stylesheet" href="./css/schedule-appointment.css">
+    <link rel="icon" type="image/png" href="./images/favicon.png" />
+    <title>Appointment scheduling</title>
+</head>
+
+<body>
+    <div class="d-flex flex-column w-100">
+        <header class="d-flex justify-content-center mb-auto p-3 border-bottom">
+            <a href="./homepage.html" class="d-flex align-items-center me-auto text-decoration-none page-title">
+                <img src="./images/logo.png" class="me-3" width="40" height="40" />
+                <span class="pb-1">Vehicle inspection</span>
+            </a>
+
+            <ul class="nav">
+                <li class="nav-item"><a href="./homepage.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="./appointments.html" class="nav-link">Uninspected vehicles</a></li>
+                <li class="nav-item"><a href="./inspection-reports.html" class="nav-link">Inspection reports</a></li>
+            </ul>
+        </header>
+
+        <main class="mx-auto">
+            <div class="main-container">
+                <h1 class="text-center my-3">Appointment scheduling</h1>
+                <form id="formContainer">
+                    <button type="submit" class="btn btn-primary col-12 my-3">Confirm</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/form-generator.js"></script>
+    <script src="./js/schedule-appointment.js"></script>
+</body>
+
+</html>

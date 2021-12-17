@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0fr7001" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.9.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="Process_VehicleInspection" isExecutable="true">
+    <bpmn:extensionElements>
+      <camunda:executionListener class="rs.ac.uns.ftn.vehicleinspectionapp.camunda.listener.SelectOptionsListener" event="start" />
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="Event_0dr4lku" name="Start">
+      <bpmn:outgoing>Flow_0c6c736</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Activity_AppointmentForm" name="Schedule appointment">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="firstName" label="First name" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="lastName" label="Last name" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="phoneNum" label="Phone number" type="string">
+            <camunda:properties>
+              <camunda:property id="subtype" value="tel" />
+            </camunda:properties>
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+              <camunda:constraint name="pattern" config="^[(]{0,1}[+]{0,1}[0-9]{3}[)]{0,1}[-/ 0-9]*$" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="vehicle" label="Vehicle" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="dateTime" label="Date &#38; time" type="enum">
+            <camunda:properties>
+              <camunda:property id="options" value="availableApptOptions" />
+            </camunda:properties>
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0c6c736</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ao3vr0</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_1h69tj8" name="Fail">
+      <bpmn:incoming>Flow_09u9mft</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Event_1y3lu7v" name="Time for scheduling passed" attachedToRef="Activity_AppointmentForm">
+      <bpmn:outgoing>Flow_09u9mft</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_06bk1lk">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P1D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0c6c736" sourceRef="Event_0dr4lku" targetRef="Activity_AppointmentForm" />
+    <bpmn:sequenceFlow id="Flow_09u9mft" sourceRef="Event_1y3lu7v" targetRef="Event_1h69tj8" />
+    <bpmn:endEvent id="Event_1g4ewq1" name="Success">
+      <bpmn:incoming>Flow_0mqlkqy</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0ao3vr0" sourceRef="Activity_AppointmentForm" targetRef="Activity_CreateAppointment" />
+    <bpmn:serviceTask id="Activity_CreateAppointment" name="Create appointment in DB" camunda:class="rs.ac.uns.ftn.vehicleinspectionapp.camunda.delegate.CreateAppointmentDelegate">
+      <bpmn:incoming>Flow_0ao3vr0</bpmn:incoming>
+      <bpmn:outgoing>Flow_05cp8e5</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Activity_InspectionReportForm" name="Fill-in inspection report">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="vehicleType" label="Vehicle type" type="enum">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+            <camunda:value id="PASSENGER_VEHICLE" name="Passenger vehicle" />
+            <camunda:value id="COMMERCIAL_VEHICLE" name="Commercial vehicle" />
+          </camunda:formField>
+          <camunda:formField id="vehicle" label="Vehicle" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="productionYear" label="Production year" type="integer">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+              <camunda:constraint name="step" config="1" />
+              <camunda:constraint name="min" config="1885" />
+              <camunda:constraint name="max" config="2100" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="engineCapacity" label="Engine capacity" type="integer">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+              <camunda:constraint name="step" config="1" />
+              <camunda:constraint name="min" config="0" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="enginePower" label="Engine power (kW)" type="double">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+              <camunda:constraint name="step" config="0.1" />
+              <camunda:constraint name="min" config="0" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="fuelTypes" label="Fuel types" type="enum">
+            <camunda:properties>
+              <camunda:property id="options" value="fuelTypeOptions" />
+            </camunda:properties>
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+              <camunda:constraint name="multiple" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="hasNoMajorMechanicalDefects" label="No major mechanical defects" type="boolean">
+            <camunda:properties>
+              <camunda:property id="value" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="hasNoMajorBodyDefects" label="No major body defects" type="boolean">
+            <camunda:properties>
+              <camunda:property id="checked" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="images" label="Images" type="file">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+              <camunda:constraint name="accept" config="image/png, image/jpeg" />
+              <camunda:constraint name="multiple" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="additionalNotes" label="Notes" type="textarea">
+            <camunda:properties>
+              <camunda:property id="rows" value="4" />
+              <camunda:property id="cols" value="40" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="hasPassed" type="radio">
+            <camunda:properties>
+              <camunda:property id="true" value="Passed" />
+              <camunda:property id="false" value="Failed" />
+            </camunda:properties>
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="inspectionDate" label="Inspection date" type="date">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+              <camunda:constraint name="min" config="2021-09-01" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="inspectionTime" label="Inspection time" type="time">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+              <camunda:constraint name="min" config="08:45" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_05cp8e5</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nglxrg</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_1etweh0" name="Fail">
+      <bpmn:incoming>Flow_1nfu6en</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Event_1d9j6fp" name="Time for vehicle inspection passed" attachedToRef="Activity_InspectionReportForm">
+      <bpmn:outgoing>Flow_1nfu6en</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_150b7dg">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P10D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1nfu6en" sourceRef="Event_1d9j6fp" targetRef="Event_1etweh0" />
+    <bpmn:sequenceFlow id="Flow_0nglxrg" sourceRef="Activity_InspectionReportForm" targetRef="Activity_CreateInspectionReport" />
+    <bpmn:serviceTask id="Activity_CreateInspectionReport" name="Create inspection report in DB" camunda:class="rs.ac.uns.ftn.vehicleinspectionapp.camunda.delegate.CreateInspectionReportDelegate">
+      <bpmn:incoming>Flow_0nglxrg</bpmn:incoming>
+      <bpmn:outgoing>Flow_0x6jdma</bpmn:outgoing>
+      <bpmn:outgoing>Flow_06w6geh</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0x6jdma" sourceRef="Activity_CreateInspectionReport" targetRef="Activity_14g7qzq" />
+    <bpmn:sequenceFlow id="Flow_06w6geh" sourceRef="Activity_CreateInspectionReport" targetRef="Event_1vcb5z5" />
+    <bpmn:endEvent id="Event_1vcb5z5" name="Error">
+      <bpmn:incoming>Flow_06w6geh</bpmn:incoming>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1pnvgyn" errorRef="Error_0uwevww" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0mqlkqy" sourceRef="Activity_14g7qzq" targetRef="Event_1g4ewq1" />
+    <bpmn:userTask id="Activity_14g7qzq" name="Upload included images" camunda:assignee="{tehnician}">
+      <bpmn:incoming>Flow_0x6jdma</bpmn:incoming>
+      <bpmn:outgoing>Flow_0mqlkqy</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_05cp8e5" sourceRef="Activity_CreateAppointment" targetRef="Activity_InspectionReportForm" />
+  </bpmn:process>
+  <bpmn:error id="Error_0uwevww" name="noAppointmentOrTechnician" errorCode="noAppointmentOrTechnician" camunda:errorMessage="Desired appointment/technician doesn&#39;t exist." />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_VehicleInspection">
+      <bpmndi:BPMNEdge id="Flow_05cp8e5_di" bpmnElement="Flow_05cp8e5">
+        <di:waypoint x="410" y="287" />
+        <di:waypoint x="410" y="320" />
+        <di:waypoint x="280" y="320" />
+        <di:waypoint x="280" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mqlkqy_di" bpmnElement="Flow_0mqlkqy">
+        <di:waypoint x="590" y="390" />
+        <di:waypoint x="622" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06w6geh_di" bpmnElement="Flow_06w6geh">
+        <di:waypoint x="410" y="430" />
+        <di:waypoint x="410" y="495" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0x6jdma_di" bpmnElement="Flow_0x6jdma">
+        <di:waypoint x="460" y="390" />
+        <di:waypoint x="490" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nglxrg_di" bpmnElement="Flow_0nglxrg">
+        <di:waypoint x="330" y="390" />
+        <di:waypoint x="360" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nfu6en_di" bpmnElement="Flow_1nfu6en">
+        <di:waypoint x="280" y="448" />
+        <di:waypoint x="280" y="495" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ao3vr0_di" bpmnElement="Flow_0ao3vr0">
+        <di:waypoint x="330" y="247" />
+        <di:waypoint x="360" y="247" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09u9mft_di" bpmnElement="Flow_09u9mft">
+        <di:waypoint x="300" y="189" />
+        <di:waypoint x="300" y="138" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0c6c736_di" bpmnElement="Flow_0c6c736">
+        <di:waypoint x="198" y="247" />
+        <di:waypoint x="230" y="247" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0dr4lku_di" bpmnElement="Event_0dr4lku">
+        <dc:Bounds x="162" y="229" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="168" y="272" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0bf03qs_di" bpmnElement="Activity_AppointmentForm">
+        <dc:Bounds x="230" y="207" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1h69tj8_di" bpmnElement="Event_1h69tj8">
+        <dc:Bounds x="282" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="291" y="85" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1g4ewq1_di" bpmnElement="Event_1g4ewq1">
+        <dc:Bounds x="622" y="372" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="622" y="415" width="42" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1blzhgk_di" bpmnElement="Activity_CreateAppointment">
+        <dc:Bounds x="360" y="207" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13eu7ma_di" bpmnElement="Activity_InspectionReportForm">
+        <dc:Bounds x="230" y="350" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1etweh0_di" bpmnElement="Event_1etweh0">
+        <dc:Bounds x="262" y="495" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="272" y="538" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0kv8ufw_di" bpmnElement="Activity_CreateInspectionReport">
+        <dc:Bounds x="360" y="350" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1vm6e90_di" bpmnElement="Event_1vcb5z5">
+        <dc:Bounds x="392" y="495" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="398" y="538" width="26" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ae37wu_di" bpmnElement="Activity_14g7qzq">
+        <dc:Bounds x="490" y="350" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1d9j6fp_di" bpmnElement="Event_1d9j6fp">
+        <dc:Bounds x="262" y="412" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="286" y="455" width="89" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1y3lu7v_di" bpmnElement="Event_1y3lu7v">
+        <dc:Bounds x="282" y="189" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="310" y="150" width="53" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,13 @@
+.main-container {
+    min-width: 500px;
+}
+
+.passed {
+    font-weight: 600;
+    color: limegreen;
+}
+
+.not-passed {
+    font-weight: 600;
+    color: red;
+}

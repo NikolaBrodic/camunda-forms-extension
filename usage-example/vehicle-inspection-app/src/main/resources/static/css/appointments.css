@@ -1,0 +1,16 @@
+.main-container {
+    min-width: 500px;
+}
+
+h2 {
+    font-size: 1.7em;
+}
+
+.inspection-time {
+    font-size: 1.4em;
+    font-weight: 600;
+}
+
+.w-table {
+    width: 250px;
+}

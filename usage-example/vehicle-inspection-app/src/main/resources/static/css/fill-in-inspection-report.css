@@ -1,0 +1,16 @@
+.main-container {
+    width: 400px;
+}
+
+h1 {
+    font-size: 2.25em;
+    max-width: 400px;
+}
+
+.lbl-space {
+    margin-left: 10px;
+}
+
+.has-passed-space {
+    margin-right: 80px;
+}

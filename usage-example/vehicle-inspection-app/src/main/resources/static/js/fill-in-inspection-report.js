@@ -31,7 +31,8 @@ function showAppointmentDetails(appointment) {
 
 let formatDateTime = (dateTime) => {
     let dtStr = new Date(dateTime).toLocaleString('sr-RS');
-    let dt = dtStr.substring(0, 11) + ' u ' + dtStr.substring(12, 17);
+    let dtParts = dtStr.split(' ');
+    let dt = dtParts[0] + ' at ' + dtParts[1];
 
     return dt;
 }
